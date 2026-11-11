@@ -7,7 +7,7 @@
  * to ping you when it finishes a task or needs your answer.
  *
  * Settings (env vars, set by the .mcpb installer UI or by hand):
- *   NOTIFY_LANG            auto | en | ru | de | ja | ...  (labels language, default auto = system)
+ *   NOTIFY_LANG            auto | en | ru | de | ja | ...  (labels language; auto = language of the thread's reply, else system)
  *   NOTIFY_SOUND_DONE      macOS sound name      (default Glass)
  *   NOTIFY_SOUND_QUESTION  macOS sound name      (default Ping)
  *   NOTIFY_SOUND_URGENT    macOS sound name      (default Sosumi)
@@ -21,7 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const SERVER_INFO = { name: 'claude-smart-notifier', version: VERSION };
 
 // [done, question, urgent] labels. Add a language with one line, PRs welcome.
@@ -122,8 +122,9 @@ function envFlag(v) {
   return /^(1|true|yes|on)$/i.test(String(v || '').trim());
 }
 
-function loadConfig() {
-  const labels = resolveLabels(env('NOTIFY_LANG', 'auto'));
+function loadConfig(threadLang) {
+  const setting = env('NOTIFY_LANG', 'auto').toLowerCase();
+  const labels = resolveLabels(setting === 'auto' && threadLang ? threadLang : setting);
   const cfg = {
     mute: envFlag(env('NOTIFY_MUTE', 'false')),
     emojiInTitle: true,
@@ -157,10 +158,10 @@ function loadConfig() {
 const INSTRUCTIONS =
   'The user runs many Claude threads in parallel and does not watch them. ' +
   "At the END of every turn where you finished a task or need the user's answer, decision, data or access, " +
-  'call the `notify` tool exactly once, as your last action. Skip it for quick back-and-forth replies ' +
+  'you MUST call the `notify` tool exactly once, as your last action — this is required, not optional. Skip it for quick back-and-forth replies ' +
   'while the user is clearly chatting live. ' +
   "Fields: title = project or thread name (short); level = 'done' (finished), 'question' (waiting for the user), " +
-  "'urgent' (blocked, error, deadline); message = ultra-short summary of what the user must do, " +
+  "'urgent' (blocked, error, deadline); lang = language code of your reply (e.g. 'en', 'ru'); message = ultra-short summary of what the user must do, " +
   "max ~40 characters, imperative, in the user's language, most important words first " +
   "(e.g. 'Pick NVR: Dahua or Hikvision?', 'Quote ready, check prices'). " +
   'Never put details in the notification; they stay in the chat.';
@@ -180,6 +181,7 @@ function toolsDef(cfg) {
           title: { type: 'string', description: 'Project / thread name' },
           message: { type: 'string', description: 'Ultra-short: what the user must do (<= ~40 chars)' },
           level: { type: 'string', enum: Object.keys(cfg.levels), description: 'Importance level' },
+          lang: { type: 'string', description: "Language code of your reply to the user (e.g. 'en', 'ru', 'de'); labels follow it when the language setting is auto" },
           subtitle: { type: 'string', description: "Optional; defaults to the level's label" },
           sound: { type: 'string', description: "Optional override of the level's sound (macOS sound name)" },
         },
@@ -269,7 +271,7 @@ function notifyLinux(n) {
 }
 
 async function notify(args) {
-  const cfg = loadConfig();
+  const cfg = loadConfig(args.lang);
   if (cfg.mute) return { text: 'Muted in settings — notification not shown.', isError: false };
   const level = cfg.levels[args.level] ? args.level : cfg.defaultLevel;
   const spec = cfg.levels[level] || {};

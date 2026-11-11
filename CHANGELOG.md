@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.0] — 2026-11-11
+
+### Changed
+- `auto` language now follows the language the thread replies in (new `lang` tool argument), falling back to the system language
+- Stronger server instructions: calling `notify` at the end of a task is required
+
 ## [1.1.0] — 2026-11-11
 
 ### Added

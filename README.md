@@ -66,7 +66,7 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 
 1. Download **[claude-smart-notifier.mcpb](https://github.com/vjvasiljev/claude_smart_notifier/releases/latest/download/claude-smart-notifier.mcpb)**
 2. Double-click it. Claude opens the install dialog, then click **Install**
-3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: language (`auto` by default, 48 languages), sounds, mute
+3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: language (`auto` = same as the thread, 48 languages), sounds, mute
 
 > **Do I need to put any files on my computer?** No. The `.mcpb` is a Claude Desktop extension: Claude installs it, runs it with its own built-in Node.js, and updates it. Nothing to configure by hand.
 
@@ -134,7 +134,7 @@ In Claude Desktop, change these in **Settings → Extensions**. Elsewhere, set t
 
 | Setting | Env var | Default | |
 |---|---|---|---|
-| Language | `NOTIFY_LANG` | `auto` | Labels language. `auto` = system language. 48 supported: en ru uk be lt lv et pl cs sk de fr es pt it ca nl sv no da fi hu ro bg sr hr sl el tr az ka hy kk uz he ar fa hi bn ja ko zh zh-tw vi th id ms sw |
+| Language | `NOTIFY_LANG` | `auto` | Labels language. `auto` = the language the thread replies in (fallback: system language). 48 supported: en ru uk be lt lv et pl cs sk de fr es pt it ca nl sv no da fi hu ro bg sr hr sl el tr az ka hy kk uz he ar fa hi bn ja ko zh zh-tw vi th id ms sw |
 | Sound: done | `NOTIFY_SOUND_DONE` | `Glass` | macOS sound name |
 | Sound: needs answer | `NOTIFY_SOUND_QUESTION` | `Ping` | macOS sound name |
 | Sound: urgent | `NOTIFY_SOUND_URGENT` | `Sosumi` | macOS sound name |
