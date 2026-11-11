@@ -127,7 +127,7 @@ git clone https://github.com/vjvasiljev/claude_smart_notifier.git
 
 For Claude Desktop, paste this into **Settings → Your Claude → Instructions** (applies to every chat and project):
 
-> Notifications (Claude Smart Notifier): at the end of every task you finish, and whenever you need my answer, decision, data or access, call the `notify` tool once as your last action. It may be deferred — if it's not loaded, find it with tool search (query "notify") first. Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all, skip it silently.
+> Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
 
 Start a **new** thread afterwards.
 
