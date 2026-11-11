@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "smart-notifier": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/index.js"
+      ],
+      "env": {
+        "NOTIFY_LANG": "en"
+      }
+    }
+  }
+}

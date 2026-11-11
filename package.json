@@ -1,0 +1,22 @@
+{
+  "name": "claude-smart-notifier",
+  "version": "1.0.0",
+  "description": "Desktop notifications for Claude threads (macOS / Windows). Zero dependencies.",
+  "main": "server/index.js",
+  "bin": {
+    "claude-smart-notifier": "server/index.js"
+  },
+  "scripts": {
+    "test": "node server/index.js --test",
+    "pack": "mcpb pack . dist/claude-smart-notifier.mcpb"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vjvasiljev/claude_smart_notifier.git"
+  },
+  "author": "vjvasiljev"
+}

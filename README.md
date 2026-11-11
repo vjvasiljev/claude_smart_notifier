@@ -1,0 +1,193 @@
+<p align="center">
+  <img src="icon.png" width="120" alt="Claude Smart Notifier">
+</p>
+
+<h1 align="center">Claude Smart Notifier</h1>
+
+<p align="center">
+  <b>Never miss a Claude thread that's waiting for you.</b><br>
+  Native desktop notifications when any Claude thread finishes a task or needs your answer.
+</p>
+
+<p align="center">
+  <a href="https://github.com/vjvasiljev/claude_smart_notifier/releases/latest"><img src="https://img.shields.io/github/v/release/vjvasiljev/claude_smart_notifier?label=release" alt="Release"></a>
+  <img src="https://img.shields.io/badge/macOS-supported-black" alt="macOS">
+  <img src="https://img.shields.io/badge/Windows-supported-0078D6" alt="Windows">
+  <img src="https://img.shields.io/badge/dependencies-zero-brightgreen" alt="Zero dependencies">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <a href="#-install">Install</a> ·
+  <a href="#-ask-claude-to-install-it">Ask Claude to install it</a> ·
+  <a href="#%EF%B8%8F-settings">Settings</a> ·
+  <a href="#-troubleshooting">Troubleshooting</a> ·
+  <a href="README.ru.md">Русский</a>
+</p>
+
+---
+
+## The problem
+
+You run five Claude threads across three projects. One of them finished ten minutes ago and is waiting for a decision. You find out only when you happen to click on it. Work stalls.
+
+## The fix
+
+Every thread pings you, with the **project name** and **one ultra-short line** saying exactly what it needs. Details stay in the chat.
+
+```
+✅  IKI 467              Done                Quote ready, check prices
+🟡  Nordic data centers  Needs your answer   Send offer to 3 companies?
+🔴  Online shop          Urgent              WordPress login failed — send creds
+```
+
+| Level | When | Default sound (macOS) |
+|---|---|---|
+| ✅ `done` | Task finished | Glass |
+| 🟡 `question` | Waiting for your answer, decision, data or access | Ping |
+| 🔴 `urgent` | Blocked, error, deadline | Sosumi |
+
+**Highlights**
+
+- Works in **Claude Desktop** (chats, Projects, Cowork) and **Claude Code**
+- **macOS** and **Windows** (Linux via `notify-send`)
+- **One-click install**, settings in Claude's UI, no config files
+- **Zero dependencies**, no accounts, no servers. Nothing leaves your computer
+- **Self-instructing**: the server tells every Claude thread when and how to ping you, so you don't have to edit your prompts
+
+---
+
+## 📦 Install
+
+### Claude Desktop (macOS / Windows): one click
+
+1. Download **[claude-smart-notifier.mcpb](https://github.com/vjvasiljev/claude_smart_notifier/releases/latest/download/claude-smart-notifier.mcpb)**
+2. Double-click it. Claude opens the install dialog, then click **Install**
+3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: label language (`en` / `ru` / `lt`), sounds, mute
+
+Start a **new** chat and give it something that takes a while. You'll get pinged when it's done.
+
+### Claude Code
+
+```text
+/plugin marketplace add vjvasiljev/claude_smart_notifier
+/plugin install smart-notifier@claude-smart-notifier
+```
+
+Restart Claude Code.
+
+### 🤖 Ask Claude to install it
+
+Paste this into Claude (Desktop/Cowork with access to your computer, or Claude Code):
+
+> Install Claude Smart Notifier for me: https://github.com/vjvasiljev/claude_smart_notifier — follow INSTALL.md in that repo.
+
+Claude follows [`INSTALL.md`](INSTALL.md): it downloads the bundle and opens the installer (Desktop) or runs the plugin commands (Code). You only click **Install**.
+
+<details>
+<summary><b>Manual install (any MCP client)</b></summary>
+
+Requires Node.js ≥ 16.
+
+```bash
+git clone https://github.com/vjvasiljev/claude_smart_notifier.git
+```
+
+```json
+{
+  "mcpServers": {
+    "smart-notifier": {
+      "command": "node",
+      "args": ["/absolute/path/to/claude_smart_notifier/server/index.js"],
+      "env": { "NOTIFY_LANG": "en" }
+    }
+  }
+}
+```
+</details>
+
+### Check it works
+
+```bash
+node server/index.js --test
+```
+Shows one notification of each level.
+
+---
+
+## ⚙️ Settings
+
+In Claude Desktop, change these in **Settings → Extensions**. Elsewhere, set them as environment variables.
+
+| Setting | Env var | Default | |
+|---|---|---|---|
+| Language | `NOTIFY_LANG` | `en` | Labels: `en`, `ru`, `lt` |
+| Sound: done | `NOTIFY_SOUND_DONE` | `Glass` | macOS sound name |
+| Sound: needs answer | `NOTIFY_SOUND_QUESTION` | `Ping` | macOS sound name |
+| Sound: urgent | `NOTIFY_SOUND_URGENT` | `Sosumi` | macOS sound name |
+| Mute | `NOTIFY_MUTE` | `false` | Silence everything |
+| Advanced | `NOTIFY_CONFIG` | — | Path to a JSON file (below) |
+
+**Advanced: custom emoji, labels and sounds per level**
+
+```json
+{
+  "levels": {
+    "done":     { "emoji": "🟢", "sound": "Hero",  "label": "Finished" },
+    "question": { "emoji": "🟡", "sound": "Ping",  "label": "Your turn" },
+    "urgent":   { "emoji": "🔴", "sound": "Basso", "label": "Blocked" }
+  },
+  "emojiInTitle": true
+}
+```
+
+macOS sounds: `Basso` `Blow` `Bottle` `Frog` `Funk` `Glass` `Hero` `Morse` `Ping` `Pop` `Purr` `Sosumi` `Submarine` `Tink`.
+On Windows each level uses a system sound (Default / Reminder / IM), and 🔴 urgent stays on screen until dismissed.
+
+---
+
+## 🩺 Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| **macOS: nothing appears** | Notifications go through `osascript`, which macOS attributes to **Script Editor**. Open *System Settings → Notifications → Script Editor* and allow them. Turn off Focus / Do Not Disturb. |
+| **macOS: click opens Script Editor** | Known `osascript` limitation. Switch to Claude manually. |
+| **Windows: nothing appears** | *Settings → System → Notifications* must be on; Focus Assist off. Toasts appear under *Windows PowerShell*. |
+| **A thread didn't ping me** | The server instructs Claude, but the model decides when to call the tool. Already-open threads only pick it up after a restart. To make a project more reliable, add to its instructions: *"When you finish or need my answer, call notify."* |
+| **Old threads don't have the tool** | Restart Claude and start a new thread. |
+
+---
+
+## 🛠 How it works
+
+A ~260-line, zero-dependency Node.js [MCP](https://modelcontextprotocol.io) server with one tool:
+
+```
+notify(title, message, level = done | question | urgent, subtitle?, sound?)
+```
+
+- Speaks MCP over stdio
+- Calls the native notification API: `osascript` (macOS), PowerShell WinRT toast (Windows), `notify-send` (Linux)
+- Returns MCP **`instructions`**, so every connected Claude thread knows to call `notify` once at the end of a task, with a ≤ 40-character message in your language
+
+```
+server/index.js           MCP server (the whole thing)
+manifest.json             Claude Desktop extension manifest (.mcpb)
+.claude-plugin/           Claude Code plugin + marketplace
+.mcp.json                 MCP config used by the Claude Code plugin
+```
+
+## 🗺 Roadmap
+
+- [ ] Click a notification to open the exact thread
+- [ ] Quiet hours
+- [ ] Phone push (ntfy / Pushover) as an optional channel
+- [ ] Per-project sounds
+
+Ideas and PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE) © vjvasiljev
+
+<sub>Not affiliated with or endorsed by Anthropic. "Claude" is a trademark of Anthropic, PBC.</sub>

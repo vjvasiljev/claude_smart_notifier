@@ -1,0 +1,13 @@
+{
+  "name": "claude-smart-notifier",
+  "owner": {
+    "name": "vjvasiljev"
+  },
+  "plugins": [
+    {
+      "name": "smart-notifier",
+      "source": "./",
+      "description": "Desktop notification when a Claude Code session finishes or needs your answer."
+    }
+  ]
+}

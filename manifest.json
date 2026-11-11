@@ -1,0 +1,97 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/mcpb/main/schemas/mcpb-manifest-v0.3.schema.json",
+  "manifest_version": "0.3",
+  "name": "claude-smart-notifier",
+  "display_name": "Claude Smart Notifier",
+  "version": "1.0.0",
+  "description": "Get a desktop notification when any Claude thread finishes or needs your answer. ✅ done · 🟡 needs answer · 🔴 urgent.",
+  "long_description": "Running many Claude threads at once? Smart Notifier pings you with a native desktop notification (macOS / Windows) whenever a thread finishes or is waiting for you — with the project name and an ultra-short line saying what it needs. Three levels with their own emoji and sound. Zero dependencies.",
+  "author": {
+    "name": "vjvasiljev",
+    "url": "https://github.com/vjvasiljev"
+  },
+  "license": "MIT",
+  "icon": "icon.png",
+  "keywords": [
+    "notifications",
+    "alerts",
+    "productivity",
+    "macos",
+    "windows"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server/index.js"
+      ],
+      "env": {
+        "NOTIFY_LANG": "${user_config.language}",
+        "NOTIFY_SOUND_DONE": "${user_config.sound_done}",
+        "NOTIFY_SOUND_QUESTION": "${user_config.sound_question}",
+        "NOTIFY_SOUND_URGENT": "${user_config.sound_urgent}",
+        "NOTIFY_MUTE": "${user_config.mute}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "notify",
+      "description": "Show a desktop notification (done / question / urgent) with project name and a short message."
+    }
+  ],
+  "user_config": {
+    "language": {
+      "type": "string",
+      "title": "Language of labels",
+      "description": "en, ru or lt — language of the 'Done / Needs your answer / Urgent' labels.",
+      "default": "en",
+      "required": false
+    },
+    "sound_done": {
+      "type": "string",
+      "title": "Sound: done (macOS)",
+      "description": "macOS sound name for finished tasks: Glass, Hero, Ping, Pop, Purr, Funk, Submarine, Blow, Basso, Sosumi, Tink.",
+      "default": "Glass",
+      "required": false
+    },
+    "sound_question": {
+      "type": "string",
+      "title": "Sound: needs answer (macOS)",
+      "description": "macOS sound name when a thread waits for you.",
+      "default": "Ping",
+      "required": false
+    },
+    "sound_urgent": {
+      "type": "string",
+      "title": "Sound: urgent (macOS)",
+      "description": "macOS sound name for blockers and errors.",
+      "default": "Sosumi",
+      "required": false
+    },
+    "mute": {
+      "type": "boolean",
+      "title": "Mute all notifications",
+      "description": "Temporarily silence all notifications without uninstalling.",
+      "default": false,
+      "required": false
+    }
+  },
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32"
+    ],
+    "runtimes": {
+      "node": ">=16.0.0"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vjvasiljev/claude_smart_notifier"
+  },
+  "homepage": "https://github.com/vjvasiljev/claude_smart_notifier",
+  "support": "https://github.com/vjvasiljev/claude_smart_notifier/issues"
+}

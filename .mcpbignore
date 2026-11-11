@@ -1,0 +1,14 @@
+.git
+.github
+.claude-plugin
+.mcp.json
+.gitignore
+.mcpbignore
+dist
+docs
+assets
+CHANGELOG.md
+CONTRIBUTING.md
+SECURITY.md
+README.ru.md
+INSTALL.md
