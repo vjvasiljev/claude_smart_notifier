@@ -63,7 +63,7 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 - **One-click install**, settings in Claude's UI, no config files
 - **Zero dependencies**, no accounts, no servers. Your notification text never leaves your computer
 - **Update alerts**: once a day it checks GitHub and pings you when a new version is out (can be turned off)
-- **Self-instructing**: the server tells every Claude thread when and how to ping you, so you don't have to edit your prompts
+- **Set up once**: one line in your Claude instructions and every thread, in every project, pings you
 
 ---
 
@@ -118,13 +118,13 @@ git clone https://github.com/vjvasiljev/claude_smart_notifier.git
 ```
 </details>
 
-### Make every project and thread ping you
+### Make every project and thread ping you (one line — required for Claude Desktop)
 
-It already works out of the box: the server ships MCP **instructions**, so every **new** thread sees the tool and is told to call it at the end of a task. (Threads that were open before you installed it need to be restarted.)
+In **Claude Code** the server's built-in instructions are enough. In **Claude Desktop / Cowork / Projects**, extension tools are often loaded lazily and the server's instructions don't always reach the thread, so add this once to **Settings → Your Claude → Instructions**. It applies to every chat and project:
 
-Want it to be bulletproof? Add one line to **Settings → Profile → personal preferences** in Claude. It applies to *all* chats and projects:
+> Notifications (Claude Smart Notifier): at the end of every task you finish, and whenever you need my answer, decision, data or access, call the `notify` tool once as your last action. It may be deferred — if it's not loaded, find it with tool search (query "notify") first. Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all, skip it silently.
 
-> When you finish a task or need my answer, call the `notify` tool: title = project name, level = done / question / urgent, message = max 40 chars saying what I must do.
+Start a **new** thread afterwards.
 
 ### Check it works
 

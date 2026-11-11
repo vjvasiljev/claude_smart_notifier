@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/5da68f17-e8fd-4366-bc6e-96da649fcef8
 - Установка **в один клик**, настройки прямо в интерфейсе Claude
 - **Без зависимостей**, без аккаунтов и серверов, текст уведомлений не покидает компьютер
 - **Сообщает об обновлениях**: раз в сутки проверяет GitHub и присылает уведомление о новой версии (можно отключить)
-- Сервер сам объясняет каждой ветке, когда и как вас звать, так что промпты править не надо
+- **Настройка один раз**: одна строка в инструкциях Claude, и вас зовёт каждая ветка в каждом проекте
 
 ## Установка
 
@@ -52,13 +52,13 @@ https://github.com/user-attachments/assets/5da68f17-e8fd-4366-bc6e-96da649fcef8
 
 Откройте **новую** ветку, и готово.
 
-### Чтобы звал каждый проект и каждая ветка
+### Чтобы звал каждый проект и каждая ветка (одна строка, обязательно для Claude Desktop)
 
-Работает сразу: сервер сам передаёт Claude инструкцию звать вас в конце задачи. Это касается **новых** веток, а старые нужно перезапустить.
+В **Claude Code** хватает встроенных инструкций сервера. В **Claude Desktop / Cowork / Проектах** инструменты расширений часто подгружаются по требованию, и инструкции сервера до ветки не доходят. Поэтому один раз добавьте в **Settings → Your Claude → Instructions** (действует на все чаты и проекты):
 
-Для максимальной надёжности добавьте одну строку в **Settings → Profile → личные предпочтения**, она действует на все чаты и проекты:
+> Notifications (Claude Smart Notifier): at the end of every task you finish, and whenever you need my answer, decision, data or access, call the `notify` tool once as your last action. It may be deferred — if it's not loaded, find it with tool search (query "notify") first. Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all, skip it silently.
 
-> Когда закончил задачу или нужен мой ответ — вызови инструмент `notify`: title = название проекта, level = done / question / urgent, message = до 40 символов, что от меня нужно.
+После этого откройте **новую** ветку.
 
 ### Claude Code
 

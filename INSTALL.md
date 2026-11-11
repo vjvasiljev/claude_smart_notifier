@@ -31,7 +31,8 @@ claude mcp add --scope user smart-notifier -- node ~/.claude-smart-notifier/serv
    - If you cannot run commands on the host, ask the user to double-click the downloaded file.
 3. Ask the user to click **Install** in the dialog.
 4. Optional: tell the user they can pick the label language (`en` / `ru` / `lt`) in *Settings → Extensions → Claude Smart Notifier*.
-5. Tell the user to start a **new** thread (existing threads don't see new tools), then verify with
+5. Offer to add this line to *Settings → Your Claude → Instructions* (required in Claude Desktop, where the tool may be deferred): see the README section "Make every project and thread ping you".
+6. Tell the user to start a **new** thread (existing threads don't see new tools), then verify with
    `notify(title="Smart Notifier", message="Installed ✔", level="done")`.
 
 ## C. Troubleshooting to report to the user
