@@ -98,5 +98,8 @@
     "url": "https://github.com/vjvasiljev/claude_smart_notifier"
   },
   "homepage": "https://github.com/vjvasiljev/claude_smart_notifier",
-  "support": "https://github.com/vjvasiljev/claude_smart_notifier/issues"
+  "support": "https://github.com/vjvasiljev/claude_smart_notifier/issues",
+  "privacy_policies": [
+    "https://github.com/vjvasiljev/claude_smart_notifier/blob/main/PRIVACY.md"
+  ]
 }
