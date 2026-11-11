@@ -35,6 +35,10 @@ claude mcp add --scope user smart-notifier -- node ~/.claude-smart-notifier/serv
 6. Tell the user to start a **new** thread (existing threads don't see new tools), then verify with
    `notify(title="Smart Notifier", message="Installed ✔", level="done")`.
 
+## B2. Important for Claude Desktop
+
+Tell the user the three required steps from the README section "Claude Desktop: 3 steps to make it work": install, paste the Instructions line, and use threads linked to their computer (Claude Desktop on that computer, or **+ → Devices** on web/phone). Cloud-only threads can't call `notify`.
+
 ## C. Troubleshooting to report to the user
 
 - macOS shows nothing: *System Settings → Notifications → Script Editor* → allow; Focus/DND off.

@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="#-install">Install</a> ·
+  <a href="#-claude-desktop-3-steps-to-make-it-work">Claude Desktop: 3 steps</a> · <a href="#-install">Install</a> ·
   <a href="#-ask-claude-to-install-it">Ask Claude to install it</a> ·
   <a href="#%EF%B8%8F-settings">Settings</a> ·
   <a href="#-troubleshooting">Troubleshooting</a> ·
@@ -64,6 +64,28 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 - **Zero dependencies**, no accounts, no servers. Your notification text never leaves your computer
 - **Update alerts**: once a day it checks GitHub and pings you when a new version is out (can be turned off)
 - **Set up once**: one line in your Claude instructions and every thread, in every project, pings you
+
+---
+
+## ⚡ Claude Desktop: 3 steps to make it work
+
+Claude Code users: just install the plugin, nothing else. **In Claude Desktop (chats, Projects, Cowork) all three steps are required**, because of how the app works:
+
+**1. Install the extension.** Download [claude-smart-notifier.mcpb](https://github.com/vjvasiljev/claude_smart_notifier/releases/latest/download/claude-smart-notifier.mcpb) → double-click → **Install**.
+
+**2. Tell Claude to use it (once).** Claude Desktop loads extension tools on demand and doesn't pass their instructions to threads, so the model won't call `notify` unless told. Paste this into **Settings → Your Claude → Instructions**:
+
+```text
+Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
+```
+
+**3. Run threads on your computer.** Only threads **linked to your computer** can reach the extension:
+- send messages from **Claude Desktop on that computer**, or
+- on the web or phone, pick your computer under **+ → Devices** before sending.
+
+Threads running purely in the cloud (started on web/phone without a device, or cloud "coordinator" agents) **can't call `notify`**. If such an agent needs to ping you, have it start a short thread linked to your computer whose only job is to call `notify`.
+
+**Keep in mind:** the computer must be on with Claude Desktop open · new threads only (open threads don't see newly installed tools) · while you record or share the screen, macOS hides banners (they still land in Notification Center).
 
 ---
 
