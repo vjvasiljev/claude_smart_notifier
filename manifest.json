@@ -3,7 +3,7 @@
   "manifest_version": "0.3",
   "name": "claude-smart-notifier",
   "display_name": "Claude Smart Notifier",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Get a desktop notification when any Claude thread finishes or needs your answer. ✅ done · 🟡 needs answer · 🔴 urgent.",
   "long_description": "Running many Claude threads at once? Smart Notifier pings you with a native desktop notification (macOS / Windows) whenever a thread finishes or is waiting for you — with the project name and an ultra-short line saying what it needs. Three levels with their own emoji and sound. Zero dependencies.",
   "author": {
@@ -13,11 +13,16 @@
   "license": "MIT",
   "icon": "icon.png",
   "keywords": [
+    "claude",
+    "claude-code",
     "notifications",
+    "desktop-notifications",
     "alerts",
+    "mcp",
     "productivity",
     "macos",
-    "windows"
+    "windows",
+    "ai-agents"
   ],
   "server": {
     "type": "node",
@@ -45,9 +50,9 @@
   "user_config": {
     "language": {
       "type": "string",
-      "title": "Language of labels",
-      "description": "en, ru or lt — language of the 'Done / Needs your answer / Urgent' labels.",
-      "default": "en",
+      "title": "Language",
+      "description": "auto = same as your system language. Or type a code: en, ru, uk, lt, lv, et, pl, de, fr, es, pt, it, nl, sv, no, da, fi, cs, sk, hu, ro, bg, sr, hr, sl, el, tr, he, ar, fa, hi, bn, ja, ko, zh, zh-tw, vi, th, id, ms, sw, ka, hy, kk, az, uz, be, ca.",
+      "default": "auto",
       "required": false
     },
     "sound_done": {

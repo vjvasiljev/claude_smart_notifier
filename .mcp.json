@@ -6,7 +6,7 @@
         "${CLAUDE_PLUGIN_ROOT}/server/index.js"
       ],
       "env": {
-        "NOTIFY_LANG": "en"
+        "NOTIFY_LANG": "auto"
       }
     }
   }

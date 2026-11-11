@@ -1,6 +1,6 @@
 {
   "name": "claude-smart-notifier",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Desktop notifications for Claude threads (macOS / Windows). Zero dependencies.",
   "main": "server/index.js",
   "bin": {

@@ -39,9 +39,19 @@
 
 1. Скачайте **[claude-smart-notifier.mcpb](https://github.com/vjvasiljev/claude_smart_notifier/releases/latest/download/claude-smart-notifier.mcpb)**
 2. Кликните дважды, потом нажмите **Install**
-3. В *Settings → Extensions → Claude Smart Notifier* поставьте язык **ru**
+3. Язык подхватится из системы автоматически (`auto`). Поменять можно в *Settings → Extensions → Claude Smart Notifier*
+
+> **Нужно ли класть файлы на компьютер?** Нет. `.mcpb` — это расширение Claude Desktop: Claude сам его ставит, запускает своим встроенным Node.js и обновляет.
 
 Откройте **новую** ветку, и готово.
+
+### Чтобы звал каждый проект и каждая ветка
+
+Работает сразу: сервер сам передаёт Claude инструкцию звать вас в конце задачи. Это касается **новых** веток, а старые нужно перезапустить.
+
+Для максимальной надёжности добавьте одну строку в **Settings → Profile → личные предпочтения**, она действует на все чаты и проекты:
+
+> Когда закончил задачу или нужен мой ответ — вызови инструмент `notify`: title = название проекта, level = done / question / urgent, message = до 40 символов, что от меня нужно.
 
 ### Claude Code
 

@@ -3,6 +3,7 @@
 </p>
 
 <h1 align="center">Claude Smart Notifier</h1>
+<p align="center"><i>Desktop notifications for Claude Code, Claude Desktop &amp; Cowork: an MCP server that pings you when a thread is done or needs you</i></p>
 
 <p align="center">
   <b>Never miss a Claude thread that's waiting for you.</b><br>
@@ -24,6 +25,8 @@
   <a href="#-troubleshooting">Troubleshooting</a> ·
   <a href="README.ru.md">Русский</a>
 </p>
+
+<p align="center"><img src="assets/social-preview.png" width="760" alt="Claude Smart Notifier: notifications per project with done / needs answer / urgent levels"></p>
 
 ---
 
@@ -63,7 +66,9 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 
 1. Download **[claude-smart-notifier.mcpb](https://github.com/vjvasiljev/claude_smart_notifier/releases/latest/download/claude-smart-notifier.mcpb)**
 2. Double-click it. Claude opens the install dialog, then click **Install**
-3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: label language (`en` / `ru` / `lt`), sounds, mute
+3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: language (`auto` by default, 48 languages), sounds, mute
+
+> **Do I need to put any files on my computer?** No. The `.mcpb` is a Claude Desktop extension: Claude installs it, runs it with its own built-in Node.js, and updates it. Nothing to configure by hand.
 
 Start a **new** chat and give it something that takes a while. You'll get pinged when it's done.
 
@@ -106,6 +111,14 @@ git clone https://github.com/vjvasiljev/claude_smart_notifier.git
 ```
 </details>
 
+### Make every project and thread ping you
+
+It already works out of the box: the server ships MCP **instructions**, so every **new** thread sees the tool and is told to call it at the end of a task. (Threads that were open before you installed it need to be restarted.)
+
+Want it to be bulletproof? Add one line to **Settings → Profile → personal preferences** in Claude. It applies to *all* chats and projects:
+
+> When you finish a task or need my answer, call the `notify` tool: title = project name, level = done / question / urgent, message = max 40 chars saying what I must do.
+
 ### Check it works
 
 ```bash
@@ -121,7 +134,7 @@ In Claude Desktop, change these in **Settings → Extensions**. Elsewhere, set t
 
 | Setting | Env var | Default | |
 |---|---|---|---|
-| Language | `NOTIFY_LANG` | `en` | Labels: `en`, `ru`, `lt` |
+| Language | `NOTIFY_LANG` | `auto` | Labels language. `auto` = system language. 48 supported: en ru uk be lt lv et pl cs sk de fr es pt it ca nl sv no da fi hu ro bg sr hr sl el tr az ka hy kk uz he ar fa hi bn ja ko zh zh-tw vi th id ms sw |
 | Sound: done | `NOTIFY_SOUND_DONE` | `Glass` | macOS sound name |
 | Sound: needs answer | `NOTIFY_SOUND_QUESTION` | `Ping` | macOS sound name |
 | Sound: urgent | `NOTIFY_SOUND_URGENT` | `Sosumi` | macOS sound name |
@@ -158,6 +171,26 @@ On Windows each level uses a system sound (Default / Reminder / IM), and 🔴 ur
 
 ---
 
+## ❓ FAQ
+
+**How do I get notified when Claude Code finishes a task?**
+Install the Claude Code plugin (two commands above). Every session will ping you when it's done or waiting for input.
+
+**How do I know when a Claude Desktop / Cowork / Projects chat is waiting for me?**
+Install the `.mcpb` extension. Any thread that needs your decision sends a 🟡 notification with the project name.
+
+**Does it work with many parallel threads and projects?**
+That's what it's built for. Each notification starts with the project name, so you know where to go.
+
+**Does it send my data anywhere?**
+No. It runs locally and only calls your OS notification API. No network, no telemetry.
+
+**Can it play a different sound per level?**
+Yes. Set sounds in the extension settings, or emoji/labels/sounds per level via `NOTIFY_CONFIG`.
+
+**My language isn't there.**
+Add one line to `LABELS` in `server/index.js` and open a PR.
+
 ## 🛠 How it works
 
 A ~260-line, zero-dependency Node.js [MCP](https://modelcontextprotocol.io) server with one tool:
@@ -183,6 +216,7 @@ manifest.json             Claude Desktop extension manifest (.mcpb)
 - [ ] Quiet hours
 - [ ] Phone push (ntfy / Pushover) as an optional channel
 - [ ] Per-project sounds
+- [ ] Native dropdown for language (when Claude extension settings support it)
 
 Ideas and PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

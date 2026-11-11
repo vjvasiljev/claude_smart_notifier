@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0] — 2026-11-11
+
+### Added
+- 48 label languages; `auto` (default) follows the system language
+- Automatic GitHub Release with the `.mcpb` on every version bump
+- README: "make every thread ping you", FAQ
+
 ## [1.0.0] — 2026-11-11
 
 ### Added

@@ -7,7 +7,7 @@
  * to ping you when it finishes a task or needs your answer.
  *
  * Settings (env vars, set by the .mcpb installer UI or by hand):
- *   NOTIFY_LANG            en | ru | lt          (labels language, default en)
+ *   NOTIFY_LANG            auto | en | ru | de | ja | ...  (labels language, default auto = system)
  *   NOTIFY_SOUND_DONE      macOS sound name      (default Glass)
  *   NOTIFY_SOUND_QUESTION  macOS sound name      (default Ping)
  *   NOTIFY_SOUND_URGENT    macOS sound name      (default Sosumi)
@@ -21,14 +21,90 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const SERVER_INFO = { name: 'claude-smart-notifier', version: VERSION };
 
+// [done, question, urgent] labels. Add a language with one line, PRs welcome.
 const LABELS = {
-  en: { done: 'Done', question: 'Needs your answer', urgent: 'Urgent' },
-  ru: { done: 'Готово', question: 'Нужен ответ', urgent: 'Срочно' },
-  lt: { done: 'Atlikta', question: 'Reikia atsakymo', urgent: 'Skubu' },
+  en: ['Done', 'Needs your answer', 'Urgent'],
+  ru: ['Готово', 'Нужен ответ', 'Срочно'],
+  uk: ['Готово', 'Потрібна відповідь', 'Терміново'],
+  be: ['Гатова', 'Патрэбны адказ', 'Тэрмінова'],
+  lt: ['Atlikta', 'Reikia atsakymo', 'Skubu'],
+  lv: ['Gatavs', 'Vajag atbildi', 'Steidzami'],
+  et: ['Valmis', 'Vajab vastust', 'Kiire'],
+  pl: ['Gotowe', 'Potrzebna odpowiedź', 'Pilne'],
+  cs: ['Hotovo', 'Čeká na odpověď', 'Naléhavé'],
+  sk: ['Hotovo', 'Čaká na odpoveď', 'Naliehavé'],
+  de: ['Fertig', 'Antwort benötigt', 'Dringend'],
+  fr: ['Terminé', 'Réponse requise', 'Urgent'],
+  es: ['Listo', 'Necesita tu respuesta', 'Urgente'],
+  pt: ['Concluído', 'Precisa da sua resposta', 'Urgente'],
+  it: ['Fatto', 'Serve la tua risposta', 'Urgente'],
+  ca: ['Fet', 'Cal la teva resposta', 'Urgent'],
+  nl: ['Klaar', 'Antwoord nodig', 'Dringend'],
+  sv: ['Klart', 'Behöver ditt svar', 'Brådskande'],
+  no: ['Ferdig', 'Trenger svar', 'Haster'],
+  nb: ['Ferdig', 'Trenger svar', 'Haster'],
+  da: ['Færdig', 'Kræver dit svar', 'Haster'],
+  fi: ['Valmis', 'Tarvitsee vastauksesi', 'Kiireellinen'],
+  hu: ['Kész', 'Válaszra vár', 'Sürgős'],
+  ro: ['Gata', 'Așteaptă răspunsul tău', 'Urgent'],
+  bg: ['Готово', 'Нужен е отговор', 'Спешно'],
+  sr: ['Готово', 'Потребан одговор', 'Хитно'],
+  hr: ['Gotovo', 'Potreban odgovor', 'Hitno'],
+  sl: ['Končano', 'Potreben odgovor', 'Nujno'],
+  el: ['Ολοκληρώθηκε', 'Χρειάζεται απάντηση', 'Επείγον'],
+  tr: ['Tamamlandı', 'Yanıtın gerekli', 'Acil'],
+  az: ['Hazırdır', 'Cavabınız lazımdır', 'Təcili'],
+  ka: ['დასრულდა', 'საჭიროა პასუხი', 'სასწრაფო'],
+  hy: ['Պատրաստ է', 'Պատասխան է պետք', 'Շտապ'],
+  kk: ['Дайын', 'Жауабыңыз керек', 'Шұғыл'],
+  uz: ['Tayyor', 'Javobingiz kerak', 'Shoshilinch'],
+  he: ['הושלם', 'נדרשת תשובה', 'דחוף'],
+  ar: ['تم', 'بحاجة إلى ردك', 'عاجل'],
+  fa: ['انجام شد', 'نیاز به پاسخ', 'فوری'],
+  hi: ['पूरा हुआ', 'आपका जवाब चाहिए', 'ज़रूरी'],
+  bn: ['সম্পন্ন', 'আপনার উত্তর দরকার', 'জরুরি'],
+  ja: ['完了', '返信が必要', '至急'],
+  ko: ['완료', '답변 필요', '긴급'],
+  zh: ['已完成', '需要你的回复', '紧急'],
+  'zh-tw': ['已完成', '需要你的回覆', '緊急'],
+  vi: ['Xong', 'Cần bạn trả lời', 'Khẩn'],
+  th: ['เสร็จแล้ว', 'รอคำตอบของคุณ', 'ด่วน'],
+  id: ['Selesai', 'Perlu jawabanmu', 'Mendesak'],
+  ms: ['Siap', 'Perlu jawapan anda', 'Segera'],
+  sw: ['Imekamilika', 'Inahitaji jibu lako', 'Haraka'],
 };
+
+let detectedLocale = null;
+function systemLocale() {
+  if (detectedLocale) return detectedLocale;
+  let loc = process.env.LC_ALL || process.env.LC_MESSAGES || process.env.LANG || '';
+  try {
+    if (process.platform === 'darwin') {
+      const out = require('child_process').execFileSync('/usr/bin/defaults', ['read', '-g', 'AppleLanguages'], { encoding: 'utf8', timeout: 2000 });
+      const m = out.match(/"?([A-Za-z]{2,3}(?:[-_][A-Za-z0-9]+)*)"?/);
+      if (m) loc = m[1];
+    } else if (process.platform === 'win32') {
+      const out = require('child_process').execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', '(Get-UICulture).Name'], { encoding: 'utf8', timeout: 5000, windowsHide: true });
+      if (out.trim()) loc = out.trim();
+    }
+  } catch (_) { /* fall through */ }
+  if (!loc || /^(C|POSIX)/.test(loc)) {
+    try { loc = Intl.DateTimeFormat().resolvedOptions().locale; } catch (_) { loc = 'en'; }
+  }
+  detectedLocale = loc.replace('_', '-').split('.')[0].toLowerCase();
+  return detectedLocale;
+}
+
+function resolveLabels(lang) {
+  let code = (lang || 'auto').toLowerCase().replace('_', '-');
+  if (code === 'auto' || code === '') code = systemLocale();
+  if (code.startsWith('zh') && /(tw|hk|mo|hant)/.test(code)) code = 'zh-tw';
+  const arr = LABELS[code] || LABELS[code.split('-')[0]] || LABELS.en;
+  return { done: arr[0], question: arr[1], urgent: arr[2] };
+}
 
 const WIN_SOUNDS = {
   done: 'ms-winsoundevent:Notification.Default',
@@ -47,8 +123,7 @@ function envFlag(v) {
 }
 
 function loadConfig() {
-  const lang = env('NOTIFY_LANG', 'en').toLowerCase();
-  const labels = LABELS[lang] || LABELS.en;
+  const labels = resolveLabels(env('NOTIFY_LANG', 'auto'));
   const cfg = {
     mute: envFlag(env('NOTIFY_MUTE', 'false')),
     emojiInTitle: true,
