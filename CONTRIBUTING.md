@@ -27,4 +27,4 @@ mcpb pack . dist/claude-smart-notifier.mcpb
 
 ## Releasing
 
-Push a tag `vX.Y.Z`. GitHub Actions builds `claude-smart-notifier.mcpb` and attaches it to the release.
+Create a GitHub Release with tag `vX.Y.Z` (Releases → Draft a new release → Publish). GitHub Actions builds `claude-smart-notifier.mcpb` and attaches it to the release.
