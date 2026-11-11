@@ -27,7 +27,9 @@
 </p>
 
 <p align="center"><img src="assets/demo.gif" width="760" alt="Claude Smart Notifier demo: notifications arrive for each project with done / needs answer / urgent levels"></p>
-<p align="center"><a href="https://github.com/vjvasiljev/claude_smart_notifier/raw/main/assets/promo.mp4">▶ Watch the 27-second video</a></p>
+
+https://github.com/user-attachments/assets/5da68f17-e8fd-4366-bc6e-96da649fcef8
+
 
 ---
 

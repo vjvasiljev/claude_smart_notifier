@@ -10,7 +10,10 @@
 </p>
 
 <p align="center"><img src="assets/demo.gif" width="760" alt="Демо Claude Smart Notifier"></p>
-<p align="center"><a href="https://github.com/vjvasiljev/claude_smart_notifier/raw/main/assets/promo.mp4">▶ Смотреть видео (27 сек)</a> · <a href="README.md">English</a></p>
+
+https://github.com/user-attachments/assets/5da68f17-e8fd-4366-bc6e-96da649fcef8
+
+<p align="center"><a href="README.md">English</a></p>
 
 ---
 
