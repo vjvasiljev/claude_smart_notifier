@@ -3,7 +3,7 @@
   "manifest_version": "0.3",
   "name": "claude-smart-notifier",
   "display_name": "Claude Smart Notifier",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Get a desktop notification when any Claude thread finishes or needs your answer. ✅ done · 🟡 needs answer · 🔴 urgent.",
   "long_description": "Running many Claude threads at once? Smart Notifier pings you with a native desktop notification (macOS / Windows) whenever a thread finishes or is waiting for you — with the project name and an ultra-short line saying what it needs. Three levels with their own emoji and sound. Zero dependencies.",
   "author": {
@@ -37,7 +37,8 @@
         "NOTIFY_SOUND_DONE": "${user_config.sound_done}",
         "NOTIFY_SOUND_QUESTION": "${user_config.sound_question}",
         "NOTIFY_SOUND_URGENT": "${user_config.sound_urgent}",
-        "NOTIFY_MUTE": "${user_config.mute}"
+        "NOTIFY_MUTE": "${user_config.mute}",
+        "NOTIFY_UPDATE_CHECK": "${user_config.check_updates}"
       }
     }
   },
@@ -81,6 +82,13 @@
       "title": "Mute all notifications",
       "description": "Temporarily silence all notifications without uninstalling.",
       "default": false,
+      "required": false
+    },
+    "check_updates": {
+      "type": "boolean",
+      "title": "Check for updates",
+      "description": "Once a day, ask GitHub for the latest version and notify you when there is a new one. Nothing else is sent.",
+      "default": true,
       "required": false
     }
   },

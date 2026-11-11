@@ -58,7 +58,8 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 > [!IMPORTANT]
 > **Windows testers wanted.** The Windows version is written but not yet tested on a real Windows machine. On Windows? Please try it and report in [issue #1](https://github.com/vjvasiljev/claude_smart_notifier/issues/1). It takes 2 minutes.
 - **One-click install**, settings in Claude's UI, no config files
-- **Zero dependencies**, no accounts, no servers. Nothing leaves your computer
+- **Zero dependencies**, no accounts, no servers. Your notification text never leaves your computer
+- **Update alerts**: once a day it checks GitHub and pings you when a new version is out (can be turned off)
 - **Self-instructing**: the server tells every Claude thread when and how to ping you, so you don't have to edit your prompts
 
 ---
@@ -71,7 +72,7 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 2. Double-click it. Claude opens the install dialog, then click **Install**
 3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: language (`auto` = same as the thread, 48 languages), sounds, mute
 
-> **Do I need to put any files on my computer?** No. The `.mcpb` is a Claude Desktop extension: Claude installs it and runs it with its own built-in Node.js. To update, download the new `.mcpb` from Releases and install it again. Nothing to configure by hand.
+> **Do I need to put any files on my computer?** No. The `.mcpb` is a Claude Desktop extension: Claude installs it and runs it with its own built-in Node.js. When a new version is out you get a notification; download the new `.mcpb` from Releases and install it over the old one. Nothing to configure by hand.
 
 Start a **new** chat and give it something that takes a while. You'll get pinged when it's done.
 
@@ -142,6 +143,7 @@ In Claude Desktop, change these in **Settings → Extensions**. Elsewhere, set t
 | Sound: needs answer | `NOTIFY_SOUND_QUESTION` | `Ping` | macOS sound name |
 | Sound: urgent | `NOTIFY_SOUND_URGENT` | `Sosumi` | macOS sound name |
 | Mute | `NOTIFY_MUTE` | `false` | Silence everything |
+| Check for updates | `NOTIFY_UPDATE_CHECK` | `true` | Once a day ask GitHub for the latest release and notify you about a new version |
 | Advanced | `NOTIFY_CONFIG` | — | Path to a JSON file (below) |
 
 **Advanced: custom emoji, labels and sounds per level**
@@ -186,7 +188,7 @@ Install the `.mcpb` extension. Any thread that needs your decision sends a 🟡 
 That's what it's built for. Each notification starts with the project name, so you know where to go.
 
 **Does it send my data anywhere?**
-No. It runs locally and only calls your OS notification API. No network, no telemetry.
+No. Your notifications are shown locally via the OS. The only network request is a once-a-day version check to GitHub's public releases API (no data about you, can be turned off). No telemetry.
 
 **Can it play a different sound per level?**
 Yes. Set sounds in the extension settings, or emoji/labels/sounds per level via `NOTIFY_CONFIG`.

@@ -12,6 +12,7 @@
  *   NOTIFY_SOUND_QUESTION  macOS sound name      (default Ping)
  *   NOTIFY_SOUND_URGENT    macOS sound name      (default Sosumi)
  *   NOTIFY_MUTE            true | false          (default false)
+ *   NOTIFY_UPDATE_CHECK    true | false          (default true; once a day asks GitHub for the latest version)
  *   NOTIFY_CONFIG          path to a JSON file overriding everything above (optional)
  */
 'use strict';
@@ -20,8 +21,9 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const os = require('os');
 
-const VERSION = '1.2.1';
+const VERSION = '1.3.0';
 const SERVER_INFO = { name: 'claude-smart-notifier', version: VERSION };
 
 // [done, question, urgent] labels. Add a language with one line, PRs welcome.
@@ -302,6 +304,60 @@ async function notify(args) {
   return { text: `Notification sent [${level}]: ${n.title} | ${n.subtitle} | ${n.message}${note}`, isError: false };
 }
 
+
+// ---------- update check (once a day, GitHub releases only, opt-out) ----------
+
+const REPO = 'vjvasiljev/claude_smart_notifier';
+const RELEASES_URL = `https://github.com/${REPO}/releases/latest`;
+const UPDATE_URL = env('NOTIFY_UPDATE_URL', `https://api.github.com/repos/${REPO}/releases/latest`);
+const STATE_FILE = path.join(os.homedir(), '.claude-smart-notifier.json');
+const DAY = 24 * 60 * 60 * 1000;
+let availableUpdate = null;
+
+function newer(a, b) {
+  const pa = String(a).replace(/^v/, '').split('.').map((n) => parseInt(n, 10) || 0);
+  const pb = String(b).replace(/^v/, '').split('.').map((n) => parseInt(n, 10) || 0);
+  for (let i = 0; i < 3; i++) { if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) > (pb[i] || 0); }
+  return false;
+}
+
+function readState() { try { return JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')); } catch { return {}; } }
+function writeState(st) { try { fs.writeFileSync(STATE_FILE, JSON.stringify(st)); } catch { /* read-only home: ignore */ } }
+
+function fetchLatestTag() {
+  return new Promise((resolve) => {
+    let mod;
+    try { mod = UPDATE_URL.startsWith('http://') ? require('http') : require('https'); } catch { return resolve(null); }
+    const req = mod.get(UPDATE_URL, { headers: { 'User-Agent': `claude-smart-notifier/${VERSION}`, Accept: 'application/vnd.github+json' }, timeout: 5000 }, (res) => {
+      let body = '';
+      res.on('data', (d) => (body += d));
+      res.on('end', () => { try { resolve(res.statusCode === 200 ? JSON.parse(body).tag_name || null : null); } catch { resolve(null); } });
+    });
+    req.on('timeout', () => req.destroy());
+    req.on('error', () => resolve(null));
+  });
+}
+
+async function checkForUpdate() {
+  if (!envFlag(env('NOTIFY_UPDATE_CHECK', 'true'))) return;
+  const st = readState();
+  if (st.lastCheck && Date.now() - st.lastCheck < DAY && !process.env.NOTIFY_UPDATE_URL) {
+    if (st.latest && newer(st.latest, VERSION)) availableUpdate = st.latest;
+    return;
+  }
+  const tag = await fetchLatestTag();
+  st.lastCheck = Date.now();
+  if (tag) st.latest = tag;
+  if (tag && newer(tag, VERSION)) {
+    availableUpdate = tag;
+    if (st.notified !== tag) {
+      st.notified = tag;
+      await notify({ title: 'Smart Notifier', level: 'done', message: `${tag} available — update from GitHub Releases` });
+    }
+  }
+  writeState(st);
+}
+
 // ---------- MCP stdio JSON-RPC ----------
 
 function send(msg) {
@@ -324,7 +380,9 @@ async function handle(req) {
       const p = req.params || {};
       if (p.name !== 'notify') return send({ jsonrpc: '2.0', id, error: { code: -32602, message: 'Unknown tool' } });
       const r = await notify(p.arguments || {});
-      result = { content: [{ type: 'text', text: r.text }], isError: r.isError };
+      let text = r.text;
+      if (availableUpdate) text += `\nUpdate available: Claude Smart Notifier ${availableUpdate} (installed ${VERSION}). Mention it to the user once: ${RELEASES_URL}`;
+      result = { content: [{ type: 'text', text }], isError: r.isError };
     } else {
       return send({ jsonrpc: '2.0', id, error: { code: -32601, message: `Method not found: ${method}` } });
     }
@@ -344,6 +402,8 @@ if (process.argv.includes('--test')) {
     }
   })();
 } else {
+  setTimeout(() => { checkForUpdate().catch(() => {}); }, Number(process.env.NOTIFY_UPDATE_DELAY || 10000)).unref();
+  setInterval(() => { checkForUpdate().catch(() => {}); }, DAY).unref();
   const rl = readline.createInterface({ input: process.stdin, terminal: false });
   rl.on('line', (line) => {
     line = line.trim();

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.0] — 2026-11-11
+
+### Added
+- Daily update check against GitHub Releases; notifies once per new version and tells Claude to mention it. Opt-out via *Check for updates* / `NOTIFY_UPDATE_CHECK=false`
+
 ## [1.2.1] — 2026-11-11
 
 ### Fixed
