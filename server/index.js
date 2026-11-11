@@ -23,7 +23,7 @@ const path = require('path');
 const readline = require('readline');
 const os = require('os');
 
-const VERSION = '1.4.0';
+const VERSION = '1.5.0';
 const SERVER_INFO = { name: 'claude-smart-notifier', version: VERSION };
 
 // [done, question, urgent] labels. Add a language with one line, PRs welcome.
@@ -167,7 +167,7 @@ const INSTRUCTIONS =
   "At the END of every turn where you finished a task or need the user's answer, decision, data or access, " +
   'you MUST call the `notify` tool exactly once, as your last action — this is required, not optional. Skip it for quick back-and-forth replies ' +
   'while the user is clearly chatting live. ' +
-  "Fields: title = project or thread name (short); level = 'done' (finished), 'question' (waiting for the user), " +
+  "Fields: project = project name (title); thread = this thread's name; level = 'done' (finished), 'question' (waiting for the user), " +
   "'urgent' (blocked, error, deadline); lang = language code of your reply (e.g. 'en', 'ru'); message = ultra-short summary of what the user must do, " +
   "max ~40 characters, imperative, in the user's language, most important words first " +
   "(e.g. 'Pick a logo: A or B?', 'Report ready, review figures'). " +
@@ -180,12 +180,14 @@ function toolsDef(cfg) {
       description:
         "Show a desktop notification with sound on the user's computer. Call it when a task is finished " +
         "or when you need the user's answer/decision. level: 'done' = finished, 'question' = waiting for " +
-        "the user's answer, 'urgent' = blocked/error/time-critical. title = project name; message = " +
+        "the user's answer, 'urgent' = blocked/error/time-critical. project = project name, thread = thread name; message = " +
         'ultra-short (<= ~40 chars) what exactly the user must do. Details stay in the chat.',
       inputSchema: {
         type: 'object',
         properties: {
-          title: { type: 'string', description: 'Project / thread name' },
+          project: { type: 'string', description: 'Project name (the Claude Project / workspace the thread belongs to). Shown as the notification title.' },
+          thread: { type: 'string', description: 'Thread / chat name inside the project. Shown in the subtitle.' },
+          title: { type: 'string', description: 'Deprecated alias of project' },
           message: { type: 'string', description: 'Ultra-short: what the user must do (<= ~40 chars)' },
           level: { type: 'string', enum: Object.keys(cfg.levels), description: 'Importance level' },
           lang: { type: 'string', description: "Language code of your reply to the user (e.g. 'en', 'ru', 'de'); labels follow it when the language setting is auto" },
@@ -284,13 +286,14 @@ async function notify(args) {
   const level = has(args.level) ? args.level : cfg.defaultLevel;
   const spec = cfg.levels[level] || {};
   const clip = (v, n) => { const t = String(v || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
-  let title = clip(args.title || 'Claude', 60);
+  let title = clip(args.project || args.title || 'Claude', 60);
+  const thread = clip(args.thread, 40);
   if (cfg.emojiInTitle !== false && spec.emoji) title = `${spec.emoji} ${title}`;
   const n = {
     level,
     title,
     message: clip(args.message, 120),
-    subtitle: clip(args.subtitle || spec.label, 60),
+    subtitle: clip(args.subtitle || (thread ? `${thread} · ${spec.label || ''}` : spec.label), 70),
     sound: String(args.sound || spec.sound || ''),
   };
   let r;

@@ -49,7 +49,7 @@ https://github.com/user-attachments/assets/5da68f17-e8fd-4366-bc6e-96da649fcef8
 **2. Скажите Claude им пользоваться (один раз).** Desktop подгружает инструменты расширений по требованию и не передаёт веткам их инструкции, поэтому без подсказки модель `notify` не вызовет. Вставьте в **Settings → Your Claude → Instructions**:
 
 ```text
-Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
+Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: project = project name, thread = this thread's name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
 ```
 
 **3. Работайте в ветках, подключённых к компьютеру.** Расширение доступно только веткам, **привязанным к вашему компьютеру**:
@@ -81,7 +81,7 @@ Always: when you finish a task, and whenever you need my answer, decision, data 
 
 Для Claude Desktop вставьте в **Settings → Your Claude → Instructions** (действует на все чаты и проекты):
 
-> Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
+> Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: project = project name, thread = this thread's name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
 
 После этого откройте **новую** ветку.
 

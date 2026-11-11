@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.0] — 2026-11-11
+
+### Added
+- `project` and `thread` arguments: title shows the project, subtitle shows `thread · status`, so you know exactly where to go. `title` still works as an alias of `project`.
+
 ## [1.4.0] — 2026-11-11
 
 ### Added
