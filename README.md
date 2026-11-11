@@ -177,6 +177,7 @@ On Windows each level uses a system sound (Default / Reminder / IM), and 🔴 ur
 | Symptom | Fix |
 |---|---|
 | **macOS: nothing appears** (the tool still reports "sent": macOS gives no delivery confirmation) | Notifications go through `osascript`, which macOS attributes to **Script Editor**. Open *System Settings → Notifications → Script Editor* and allow them. Turn off Focus / Do Not Disturb. |
+| **macOS: notifications land in Notification Center but no banner pops up** | You're recording or sharing the screen — macOS hides banners then. Stop the recording, or enable *System Settings → Notifications → Allow notifications when mirroring or sharing the display*. |
 | **macOS: click opens Script Editor** | Known `osascript` limitation. Switch to Claude manually. |
 | **Windows: nothing appears** | *Settings → System → Notifications* must be on; Focus Assist off. Toasts appear under *Windows PowerShell*. |
 | **A thread didn't ping me** | The server instructs Claude, but the model decides when to call the tool. Already-open threads only pick it up after a restart. To make a project more reliable, add to its instructions: *"When you finish or need my answer, call notify."* |
