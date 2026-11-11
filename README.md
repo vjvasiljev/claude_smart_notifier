@@ -200,6 +200,7 @@ On Windows each level uses a system sound (Default / Reminder / IM), and 🔴 ur
 |---|---|
 | **macOS: nothing appears** (the tool still reports "sent": macOS gives no delivery confirmation) | Notifications go through `osascript`, which macOS attributes to **Script Editor**. Open *System Settings → Notifications → Script Editor* and allow them. Turn off Focus / Do Not Disturb. |
 | **macOS: notifications land in Notification Center but no banner pops up** | You're recording or sharing the screen — macOS hides banners then. Stop the recording, or enable *System Settings → Notifications → Allow notifications when mirroring or sharing the display*. |
+| **macOS: banners disappear too fast** | *System Settings → Notifications → Script Editor* → style **Alerts**: notifications stay on screen until you close them. (Applies to all levels.) |
 | **macOS: click opens Script Editor** | Known `osascript` limitation. Switch to Claude manually. |
 | **Windows: nothing appears** | *Settings → System → Notifications* must be on; Focus Assist off. Toasts appear under *Windows PowerShell*. |
 | **A thread says it has no `notify` tool** | The thread isn't linked to your computer (e.g. started on the web or phone). Send a message in it from **Claude Desktop** on that computer, or on web/phone pick your computer under **+ → Devices** before sending. The computer must be on with Claude Desktop open. |
