@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0] — 2026-11-11
+
+### Added
+- Claude Code plugin hooks (Stop, Notification): zero-config notifications on finish / question / permission request, skipped when the model already called `notify`
+- First-run hint in Claude Desktop about the one-line setup
+
+### Docs
+- Clear setup table: Claude Code needs nothing; Claude Desktop needs one Instructions line (tools load on demand, server instructions don't reach threads)
+
 ## [1.3.0] — 2026-11-11
 
 ### Added

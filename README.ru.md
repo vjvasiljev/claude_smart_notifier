@@ -52,9 +52,12 @@ https://github.com/user-attachments/assets/5da68f17-e8fd-4366-bc6e-96da649fcef8
 
 Откройте **новую** ветку, и готово.
 
-### Чтобы звал каждый проект и каждая ветка (одна строка, обязательно для Claude Desktop)
+### Чтобы звал каждый проект и каждая ветка
 
-В **Claude Code** хватает встроенных инструкций сервера. В **Claude Desktop / Cowork / Проектах** инструменты расширений часто подгружаются по требованию, и инструкции сервера до ветки не доходят. Поэтому один раз добавьте в **Settings → Your Claude → Instructions** (действует на все чаты и проекты):
+- **Claude Code (плагин): ничего делать не нужно.** Встроенные хуки сами зовут вас, когда сессия закончила, задала вопрос или просит разрешение. Работает всегда, без участия модели.
+- **Claude Desktop / Cowork / Проекты (.mcpb): одна строка, один раз.** Desktop подгружает инструменты расширений по требованию и не передаёт веткам инструкции сервера, поэтому модели нужно сказать явно. При первом запуске расширение само об этом напомнит.
+
+Для Claude Desktop вставьте в **Settings → Your Claude → Instructions** (действует на все чаты и проекты):
 
 > Notifications (Claude Smart Notifier): at the end of every task you finish, and whenever you need my answer, decision, data or access, call the `notify` tool once as your last action. It may be deferred — if it's not loaded, find it with tool search (query "notify") first. Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all, skip it silently.
 

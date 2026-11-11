@@ -23,7 +23,7 @@ const path = require('path');
 const readline = require('readline');
 const os = require('os');
 
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 const SERVER_INFO = { name: 'claude-smart-notifier', version: VERSION };
 
 // [done, question, urgent] labels. Add a language with one line, PRs welcome.
@@ -358,6 +358,64 @@ async function checkForUpdate() {
   writeState(st);
 }
 
+
+// ---------- Claude Code hooks (deterministic, no model involved) ----------
+// hooks/hooks.json runs: node server/index.js --hook stop|notification  (event JSON on stdin)
+
+function lastTurnInfo(transcriptPath) {
+  // Returns { text, notified } for the latest assistant turn.
+  const info = { text: '', notified: false };
+  let lines = [];
+  try { lines = fs.readFileSync(transcriptPath, 'utf8').trim().split('\n'); } catch { return info; }
+  for (let i = lines.length - 1; i >= 0; i--) {
+    let e; try { e = JSON.parse(lines[i]); } catch { continue; }
+    const content = (e.message && e.message.content) || [];
+    if (e.type === 'user') {
+      const isToolResult = Array.isArray(content) && content.some((c) => c && c.type === 'tool_result');
+      if (!isToolResult) break; // reached the user's prompt: turn boundary
+      continue;
+    }
+    if (e.type !== 'assistant' || !Array.isArray(content)) continue;
+    for (const c of content) {
+      if (c.type === 'tool_use' && /(^|__)notify$/.test(c.name || '')) info.notified = true;
+      if (c.type === 'text' && !info.text && c.text && c.text.trim()) info.text = c.text.trim();
+    }
+  }
+  return info;
+}
+
+async function runHook(kind) {
+  let raw = '';
+  for await (const chunk of process.stdin) raw += chunk;
+  let ev = {}; try { ev = JSON.parse(raw || '{}'); } catch { /* ignore */ }
+  const project = path.basename(ev.cwd || process.cwd()) || 'Claude Code';
+  if (kind === 'notification') {
+    const msg = String(ev.message || '');
+    if (/waiting for your input/i.test(msg)) return; // the Stop hook already pinged
+    await notify({ title: project, level: 'question', message: msg || 'Needs your attention' });
+    return;
+  }
+  if (kind === 'stop') {
+    if (ev.stop_hook_active) return;
+    const t = lastTurnInfo(ev.transcript_path);
+    if (t.notified) return; // the model already called notify with a better message
+    const firstLine = (t.text.split('\n').map((l) => l.replace(/[#*_`>]/g, '').trim()).filter(Boolean).pop() || 'Finished');
+    const question = /\?\s*$/.test(t.text);
+    await notify({ title: project, level: question ? 'question' : 'done', message: firstLine });
+  }
+}
+
+// ---------- first run in Claude Desktop: tell the user about the one setup line ----------
+
+async function firstRunHint() {
+  if (env('NOTIFY_HOST', '') === 'claude-code') return;
+  const st = readState();
+  if (st.onboarded) return;
+  st.onboarded = VERSION; writeState(st);
+  await notify({ title: 'Smart Notifier installed', level: 'question',
+    message: 'One last step: add 1 line to Claude instructions — see GitHub README' });
+}
+
 // ---------- MCP stdio JSON-RPC ----------
 
 function send(msg) {
@@ -393,7 +451,10 @@ async function handle(req) {
 }
 
 // CLI test mode: `node index.js --test` shows one notification of each level.
-if (process.argv.includes('--test')) {
+const hookIdx = process.argv.indexOf('--hook');
+if (hookIdx !== -1) {
+  runHook(process.argv[hookIdx + 1]).catch(() => {}).finally(() => process.exit(0));
+} else if (process.argv.includes('--test')) {
   (async () => {
     for (const [level, msg] of [['done', 'Test: done'], ['question', 'Test: needs answer'], ['urgent', 'Test: urgent']]) {
       const r = await notify({ title: 'Smart Notifier', message: msg, level });
@@ -402,6 +463,7 @@ if (process.argv.includes('--test')) {
     }
   })();
 } else {
+  setTimeout(() => { firstRunHint().catch(() => {}); }, 3000).unref();
   setTimeout(() => { checkForUpdate().catch(() => {}); }, Number(process.env.NOTIFY_UPDATE_DELAY || 10000)).unref();
   setInterval(() => { checkForUpdate().catch(() => {}); }, DAY).unref();
   const rl = readline.createInterface({ input: process.stdin, terminal: false });

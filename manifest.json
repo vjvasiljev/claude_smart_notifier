@@ -3,7 +3,7 @@
   "manifest_version": "0.3",
   "name": "claude-smart-notifier",
   "display_name": "Claude Smart Notifier",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Get a desktop notification when any Claude thread finishes or needs your answer. ✅ done · 🟡 needs answer · 🔴 urgent.",
   "long_description": "Running many Claude threads at once? Smart Notifier pings you with a native desktop notification (macOS / Windows) whenever a thread finishes or is waiting for you — with the project name and an ultra-short line saying what it needs. Three levels with their own emoji and sound. Zero dependencies.",
   "author": {

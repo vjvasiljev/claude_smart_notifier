@@ -1,0 +1,27 @@
+{
+  "description": "Smart Notifier: notify when a session finishes or needs permission",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/server/index.js\" --hook stop",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/server/index.js\" --hook notification",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

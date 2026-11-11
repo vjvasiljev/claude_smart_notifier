@@ -118,9 +118,14 @@ git clone https://github.com/vjvasiljev/claude_smart_notifier.git
 ```
 </details>
 
-### Make every project and thread ping you (one line — required for Claude Desktop)
+### Make every project and thread ping you
 
-In **Claude Code** the server's built-in instructions are enough. In **Claude Desktop / Cowork / Projects**, extension tools are often loaded lazily and the server's instructions don't always reach the thread, so add this once to **Settings → Your Claude → Instructions**. It applies to every chat and project:
+| Where | Setup after install |
+|---|---|
+| **Claude Code** (plugin) | **Nothing.** Built-in hooks ping you when a session finishes, asks a question, or needs a permission. No model involvement, works every time. |
+| **Claude Desktop / Cowork / Projects** (.mcpb) | **One line, once.** Claude Desktop loads extension tools on demand and doesn't pass server instructions to threads, so the model has to be told. The extension reminds you on first run. |
+
+For Claude Desktop, paste this into **Settings → Your Claude → Instructions** (applies to every chat and project):
 
 > Notifications (Claude Smart Notifier): at the end of every task you finish, and whenever you need my answer, decision, data or access, call the `notify` tool once as your last action. It may be deferred — if it's not loaded, find it with tool search (query "notify") first. Arguments: title = project name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all, skip it silently.
 
