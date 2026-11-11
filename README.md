@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://github.com/vjvasiljev/claude_smart_notifier/releases/latest"><img src="https://img.shields.io/github/v/release/vjvasiljev/claude_smart_notifier?label=release" alt="Release"></a>
   <img src="https://img.shields.io/badge/macOS-supported-black" alt="macOS">
-  <img src="https://img.shields.io/badge/Windows-supported-0078D6" alt="Windows">
+  <a href="https://github.com/vjvasiljev/claude_smart_notifier/issues/1"><img src="https://img.shields.io/badge/Windows-needs%20testers-orange" alt="Windows: needs testers"></a>
   <img src="https://img.shields.io/badge/dependencies-zero-brightgreen" alt="Zero dependencies">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT"></a>
 </p>
@@ -54,6 +54,9 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 
 - Works in **Claude Desktop** (chats, Projects, Cowork) and **Claude Code**
 - **macOS** and **Windows** (Linux via `notify-send`)
+
+> [!IMPORTANT]
+> **Windows testers wanted.** The Windows version is written but not yet tested on a real Windows machine. On Windows? Please try it and report in [issue #1](https://github.com/vjvasiljev/claude_smart_notifier/issues/1). It takes 2 minutes.
 - **One-click install**, settings in Claude's UI, no config files
 - **Zero dependencies**, no accounts, no servers. Nothing leaves your computer
 - **Self-instructing**: the server tells every Claude thread when and how to ping you, so you don't have to edit your prompts
@@ -212,6 +215,7 @@ manifest.json             Claude Desktop extension manifest (.mcpb)
 
 ## 🗺 Roadmap
 
+- [ ] **Verify on Windows** ([help wanted](https://github.com/vjvasiljev/claude_smart_notifier/issues/1))
 - [ ] Click a notification to open the exact thread
 - [ ] Quiet hours
 - [ ] Phone push (ntfy / Pushover) as an optional channel
