@@ -21,7 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const VERSION = '1.2.0';
+const VERSION = '1.2.1';
 const SERVER_INFO = { name: 'claude-smart-notifier', version: VERSION };
 
 // [done, question, urgent] labels. Add a language with one line, PRs welcome.
@@ -102,7 +102,12 @@ function resolveLabels(lang) {
   let code = (lang || 'auto').toLowerCase().replace('_', '-');
   if (code === 'auto' || code === '') code = systemLocale();
   if (code.startsWith('zh') && /(tw|hk|mo|hant)/.test(code)) code = 'zh-tw';
-  const arr = LABELS[code] || LABELS[code.split('-')[0]] || LABELS.en;
+  let arr = LABELS[code] || LABELS[code.split('-')[0]];
+  if (!arr && lang && lang !== 'auto') {
+    const sys = systemLocale();
+    arr = LABELS[sys] || LABELS[sys.split('-')[0]];
+  }
+  arr = arr || LABELS.en;
   return { done: arr[0], question: arr[1], urgent: arr[2] };
 }
 
@@ -163,7 +168,7 @@ const INSTRUCTIONS =
   "Fields: title = project or thread name (short); level = 'done' (finished), 'question' (waiting for the user), " +
   "'urgent' (blocked, error, deadline); lang = language code of your reply (e.g. 'en', 'ru'); message = ultra-short summary of what the user must do, " +
   "max ~40 characters, imperative, in the user's language, most important words first " +
-  "(e.g. 'Pick NVR: Dahua or Hikvision?', 'Quote ready, check prices'). " +
+  "(e.g. 'Pick a logo: A or B?', 'Report ready, review figures'). " +
   'Never put details in the notification; they stay in the chat.';
 
 function toolsDef(cfg) {
@@ -273,15 +278,17 @@ function notifyLinux(n) {
 async function notify(args) {
   const cfg = loadConfig(args.lang);
   if (cfg.mute) return { text: 'Muted in settings — notification not shown.', isError: false };
-  const level = cfg.levels[args.level] ? args.level : cfg.defaultLevel;
+  const has = (k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(cfg.levels, k);
+  const level = has(args.level) ? args.level : cfg.defaultLevel;
   const spec = cfg.levels[level] || {};
-  let title = String(args.title || 'Claude');
+  const clip = (v, n) => { const t = String(v || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+  let title = clip(args.title || 'Claude', 60);
   if (cfg.emojiInTitle !== false && spec.emoji) title = `${spec.emoji} ${title}`;
   const n = {
     level,
     title,
-    message: String(args.message || ''),
-    subtitle: String(args.subtitle || spec.label || ''),
+    message: clip(args.message, 120),
+    subtitle: clip(args.subtitle || spec.label, 60),
     sound: String(args.sound || spec.sound || ''),
   };
   let r;
@@ -289,7 +296,10 @@ async function notify(args) {
   else if (process.platform === 'win32') r = await notifyWindows(n);
   else r = await notifyLinux(n);
   if (r.code !== 0) return { text: `Notification failed (${process.platform}): ${r.stderr.trim()}`, isError: true };
-  return { text: `Notification shown [${level}]: ${n.title} | ${n.subtitle} | ${n.message}`, isError: false };
+  const note = process.platform === 'darwin'
+    ? ' (handed to macOS; delivery cannot be confirmed — if the user saw nothing, Script Editor notifications are off or Focus is on)'
+    : '';
+  return { text: `Notification sent [${level}]: ${n.title} | ${n.subtitle} | ${n.message}${note}`, isError: false };
 }
 
 // ---------- MCP stdio JSON-RPC ----------

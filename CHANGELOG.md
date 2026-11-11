@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.1] — 2026-11-11
+
+### Fixed
+- Unknown language code now falls back to the system language instead of English
+- Unknown level (incl. `__proto__`) falls back to the default level
+- Title/subtitle capped at 60 chars, message at 120
+- macOS result no longer claims the notification was shown (delivery can't be confirmed)
+- Privacy policy link included in the bundle manifest
+- README: neutral examples, correct update instructions
+
 ## [1.2.0] — 2026-11-11
 
 ### Changed

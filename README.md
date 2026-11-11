@@ -39,9 +39,9 @@ You run five Claude threads across three projects. One of them finished ten minu
 Every thread pings you, with the **project name** and **one ultra-short line** saying exactly what it needs. Details stay in the chat.
 
 ```
-✅  IKI 467              Done                Quote ready, check prices
-🟡  Nordic data centers  Needs your answer   Send offer to 3 companies?
-🔴  Online shop          Urgent              WordPress login failed — send creds
+✅  Website redesign     Done                Homepage ready, review it
+🟡  Q3 report            Needs your answer   Use March or April figures?
+🔴  Mobile app           Urgent              Build failed — need API key
 ```
 
 | Level | When | Default sound (macOS) |
@@ -71,7 +71,7 @@ Every thread pings you, with the **project name** and **one ultra-short line** s
 2. Double-click it. Claude opens the install dialog, then click **Install**
 3. *(optional)* **Settings → Extensions → Claude Smart Notifier**: language (`auto` = same as the thread, 48 languages), sounds, mute
 
-> **Do I need to put any files on my computer?** No. The `.mcpb` is a Claude Desktop extension: Claude installs it, runs it with its own built-in Node.js, and updates it. Nothing to configure by hand.
+> **Do I need to put any files on my computer?** No. The `.mcpb` is a Claude Desktop extension: Claude installs it and runs it with its own built-in Node.js. To update, download the new `.mcpb` from Releases and install it again. Nothing to configure by hand.
 
 Start a **new** chat and give it something that takes a while. You'll get pinged when it's done.
 
@@ -166,7 +166,7 @@ On Windows each level uses a system sound (Default / Reminder / IM), and 🔴 ur
 
 | Symptom | Fix |
 |---|---|
-| **macOS: nothing appears** | Notifications go through `osascript`, which macOS attributes to **Script Editor**. Open *System Settings → Notifications → Script Editor* and allow them. Turn off Focus / Do Not Disturb. |
+| **macOS: nothing appears** (the tool still reports "sent": macOS gives no delivery confirmation) | Notifications go through `osascript`, which macOS attributes to **Script Editor**. Open *System Settings → Notifications → Script Editor* and allow them. Turn off Focus / Do Not Disturb. |
 | **macOS: click opens Script Editor** | Known `osascript` limitation. Switch to Claude manually. |
 | **Windows: nothing appears** | *Settings → System → Notifications* must be on; Focus Assist off. Toasts appear under *Windows PowerShell*. |
 | **A thread didn't ping me** | The server instructs Claude, but the model decides when to call the tool. Already-open threads only pick it up after a restart. To make a project more reliable, add to its instructions: *"When you finish or need my answer, call notify."* |
@@ -196,7 +196,7 @@ Add one line to `LABELS` in `server/index.js` and open a PR.
 
 ## 🛠 How it works
 
-A ~260-line, zero-dependency Node.js [MCP](https://modelcontextprotocol.io) server with one tool:
+A ~350-line, zero-dependency Node.js [MCP](https://modelcontextprotocol.io) server with one tool:
 
 ```
 notify(title, message, level = done | question | urgent, subtitle?, sound?)
