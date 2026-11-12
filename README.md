@@ -76,7 +76,7 @@ Claude Code users: just install the plugin, nothing else. **In Claude Desktop (c
 **2. Tell Claude to use it (once).** Claude Desktop loads extension tools on demand and doesn't pass their instructions to threads, so the model won't call `notify` unless told. Paste this into **Settings → Your Claude → Instructions**:
 
 ```text
-Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: project = the Claude Project name (not the thread name), thread = this thread's name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
+Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: project = the Claude Project name (not the thread name), thread = this thread's name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do (the gist of your "What's next?" — end every long reply with a 1–2 sentence "What's next?" line telling me exactly what I need to do, or that nothing is needed). Only if no notify tool exists at all (phone or web without my computer), skip it silently.
 ```
 
 **3. Run threads on your computer.** Only threads **linked to your computer** can reach the extension:
@@ -149,7 +149,7 @@ git clone https://github.com/vjvasiljev/claude_smart_notifier.git
 
 For Claude Desktop, paste this into **Settings → Your Claude → Instructions** (applies to every chat and project):
 
-> Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: project = the Claude Project name (not the thread name), thread = this thread's name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do. Only if no notify tool exists at all (phone or web without my computer), skip it silently.
+> Always: when you finish a task, and whenever you need my answer, decision, data or access, call the `notify` tool (Claude Smart Notifier) once as your very last action — this is required in every chat and project. The tool is often deferred: if it isn't loaded, load it first with tool search (query "notify"). Arguments: project = the Claude Project name (not the thread name), thread = this thread's name, level = done / question / urgent, lang = your reply language, message = max 40 chars saying what I must do (the gist of your "What's next?" — end every long reply with a 1–2 sentence "What's next?" line telling me exactly what I need to do, or that nothing is needed). Only if no notify tool exists at all (phone or web without my computer), skip it silently.
 
 Start a **new** thread afterwards.
 
