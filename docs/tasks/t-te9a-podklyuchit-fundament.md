@@ -2,7 +2,7 @@
 id: t-te9a
 title: Подключить Фундамент
 type: chore
-status: in_progress
+status: closed
 priority: 1
 role: executor
 size: m
@@ -18,7 +18,7 @@ question:
 repeat:
 source:
 created: 2026-11-14
-closed:
+closed: 2026-11-14T21:50Z
 not_before:
 ---
 ## Что сделать
@@ -35,5 +35,8 @@ python3 tests/stand.py --quick: всё PASS; python3 tools/check.py --title 't-�
 
 ## Журнал
 
+- 2026-11-14T21:50Z Проверено: tests/stand.py --quick: 162/162 PASS; tasks.py init: main не отстал; check.py: syntax, handshake, manifest, stand — OK
 
 ## Результат
+
+Фундамент 2.1.1 подключён: tools/, tests/stand*, CLAUDE.md, docs/workstreams/{setup,notifier}.md, check-commands.txt, CI paths-ignore.
