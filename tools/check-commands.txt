@@ -1,0 +1,4 @@
+syntax: node --check server/index.js
+handshake: sh -c 'printf "%s\n" "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{}}" "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}" | NOTIFY_UPDATE_CHECK=false node server/index.js | grep -q "\"name\":\"notify\""'
+manifest: npx -y @anthropic-ai/mcpb validate manifest.json
+stand: python3 tests/stand.py --quick
